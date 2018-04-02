@@ -1,3 +1,6 @@
+# WARNING:
+# - 6.2.23->6.2.32 changes __db_env ABI (adds convert in the middle of public handle list in struct)
+# - 6.2.32 has BDB PANIC issues with rpm 5.4.17
 #
 # Conditional build:
 %bcond_without	java		# don't build Java bindings
@@ -11,7 +14,7 @@
 
 %define		major		6
 %define		libver		%{major}.2
-%define		ver		%{libver}.23
+%define		ver		%{libver}.32
 %define		patchlevel	0
 Summary:	Berkeley DB database library for C
 Summary(pl.UTF-8):	Biblioteka C do obsługi baz Berkeley DB
@@ -20,11 +23,10 @@ Version:	%{ver}.%{patchlevel}
 Release:	1
 License:	AGPL v3
 Group:		Libraries
-#Source0Download: http://www.oracle.com/technetwork/database/database-technologies/berkeleydb/downloads/index.html
+#Source0Download: http://www.oracle.com/technetwork/database/database-technologies/berkeleydb/downloads/index-082944.html
 Source0:	http://download.oracle.com/berkeley-db/db-%{ver}.tar.gz
-# Source0-md5:	9da126afb937a48171ff1e569ce67cf1
+# Source0-md5:	33491b4756cb44b91c3318b727e71023
 Patch0:		%{name}-sql-features.patch
-Patch1:		%{name}-jbj13.patch
 URL:		http://www.oracle.com/technetwork/database/database-technologies/berkeleydb/downloads/index.html
 BuildRequires:	automake
 %if %{with java}
@@ -371,7 +373,6 @@ poleceń.
 %prep
 %setup -q -n db-%{ver}
 %patch0 -p1
-%patch1 -p1
 
 %build
 cp -f /usr/share/automake/config.sub dist
@@ -736,6 +737,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/db%{libver}_archive
 %attr(755,root,root) %{_bindir}/db%{libver}_checkpoint
+%attr(755,root,root) %{_bindir}/db%{libver}_convert
 %attr(755,root,root) %{_bindir}/db%{libver}_deadlock
 %attr(755,root,root) %{_bindir}/db%{libver}_dump
 %attr(755,root,root) %{_bindir}/db%{libver}_hotbackup
@@ -752,6 +754,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with default_db}
 %attr(755,root,root) %{_bindir}/db_archive
 %attr(755,root,root) %{_bindir}/db_checkpoint
+%attr(755,root,root) %{_bindir}/db_convert
 %attr(755,root,root) %{_bindir}/db_deadlock
 %attr(755,root,root) %{_bindir}/db_dump
 %attr(755,root,root) %{_bindir}/db_hotbackup
